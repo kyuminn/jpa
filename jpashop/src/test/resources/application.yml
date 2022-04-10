@@ -4,7 +4,7 @@
 #h2 Database -memory mode
 # memory DB still runs when you shutdown db (ctrl+c) in your shell.
 #!!!!! Even better!!!!
-# you even DON'T NEED db settings(line 8~20) because Spring boot runs memory mode if db settings don't exists.
+# you even DON'T NEED db settings(line 9~21) because Spring boot runs memory mode if db settings don't exists.
 # memory mode is valid when WAS(tomcat of Spring boot) is running.
 spring:
   datasource:

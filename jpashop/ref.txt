@@ -2,3 +2,11 @@ controller , web = 웹 계층
 service => 비즈니스 로직, 트랜잭선 처리
 repository => JPA를 직접 사용하는 계층, Entity Manager 사용
 domain => Entity가 모여있는 계층, 모든 계층에서 참조.
+
+
+테스트 코드 실행 시 test folder에 application.yml 파일이 있으면 main폴더의 application.yml보다 우선권을 가진다.
+테스트 코드 실행 시 데이터베이스를 선언하지 않아도 알아서 memory 모드로 실행된다.
+
+
+개발 순서가
+domain의 Entity > Repository > Service 순 인듯?
