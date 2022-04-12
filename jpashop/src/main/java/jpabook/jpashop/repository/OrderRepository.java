@@ -23,7 +23,11 @@ public class OrderRepository {
     }
 
     // 검색기능
+// mybatis는 동적 쿼리 되게 편하다는 장점이 있었음.. jpa는? querydsl로 처리.
+
 //    public List<Order> findAll(OrderSearch orderSearch){
-//
+
+
+//        return;
 //    }
 }
