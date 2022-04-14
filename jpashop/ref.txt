@@ -10,3 +10,7 @@ domain => Entity가 모여있는 계층, 모든 계층에서 참조.
 
 개발 순서가
 domain의 Entity > Repository > Service 순 인듯?
+
+
+스프링 부트에서는
+resources>static 아래에 있는 파일들은 기본적으로 정적 파일로 제공이 되는 듯.
