@@ -19,6 +19,7 @@ public class ItemRepository {
             em.persist(item); //신규 등록
         }else{
             em.merge(item); // 이미 db에 등록된 것을 update하는 느낌?
+            // jpa에서 권장하는 entity 수정 방식은 merge 가 아닌 '변경 감지'
         }
     }
 

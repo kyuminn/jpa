@@ -5,7 +5,8 @@
 #h2 Database
 spring:
   datasource:
-    url: jdbc:h2:tcp://localhost/~/test
+    #url: jdbc:h2:tcp://localhost/~/test  #kyumin
+    url: jdbc:h2:tcp://localhost/~/test2 #hncis
     username: sa
     password:
     driver-class-name: org.h2.Driver
