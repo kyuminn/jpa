@@ -72,9 +72,11 @@ public class ItemController {
     }
 
     @PostMapping("/items/{itemId}/edit")
-    public String updateItem(@ModelAttribute("form") BookForm form){
-        Book book = new ModelMapper().map(form, Book.class);
-        itemService.saveItem(book);
+    public String updateItem(@ModelAttribute("form") BookForm form,@PathVariable("itemId")Long itemId){
+        //준영속 엔티티!
+//        Book book = new ModelMapper().map(form, Book.class);
+//        itemService.saveItem(book);
+        itemService.updateItem(itemId,form.getName(),form.getPrice(), form.getStockQuantity());
         return "redirect:/items";
     }
 }

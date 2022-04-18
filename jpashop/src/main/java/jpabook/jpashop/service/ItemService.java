@@ -1,5 +1,6 @@
 package jpabook.jpashop.service;
 
+import jpabook.jpashop.domain.item.Book;
 import jpabook.jpashop.domain.item.Item;
 import jpabook.jpashop.repository.ItemRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,19 @@ public class ItemService {
     @Transactional
     public void saveItem(Item item){
         itemRepository.save(item);
+    }
+
+    // Spring transaction에 의해 commit 이 되면 jpa 가 변경 감지.
+    // flush = 영속성 엔티티 중에 변경된 부분이 있는지 찾음.
+    @Transactional
+    public void updateItem(Long itemId, String name, int price, int stockQuantity ){
+        Item findItem= itemRepository.findOne(itemId); // 영속성 엔티티를 가져옴
+        //findItem.change(name,price,stockQuantity); //setter 없이 새로 아예 method를 파는 것이 훨씬 더 나은 방식임.
+        findItem.setPrice(price);
+        findItem.setName(name);
+        findItem.setStockQuantity(stockQuantity);
+        // 이미 영속성 관리 대상인 엔티티를 가져와서 수정했으므로
+        //itemRepository.save(findItem); 할 필요가 없음.
     }
 
     public List<Item> findItems(){
