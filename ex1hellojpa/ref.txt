@@ -3,3 +3,47 @@ h2 database 관련
 jpa shop = > test
 
 exhellojpa=> test2
+=====================================================
+
+JPA 동작 방식
+
+Persistence 가 META-INF 아래에 있는 persistence.xml의 설정을 읽어들여서
+EntityManagerFactory를 생성하고, 필요할 때마다 이 factory에서 EntityManager를 꺼내다 사용한다.
+
+
+cf) EntityManager : Java의 collection 처럼, 내가 저장하고 싶은 데이터를 대신 저장해준다고 생각하기 (persist, find, ...)
+
+EntityManagerFactory는 하나만 생성해서 에플리케이션 전체에 공유
+EntityManager는 쓰레드간에 공유하면 안된다 (한번 사용하고 버리기.)
+JPA에서 데이터를 변경하는 모든 작업은 트랜잭션 안에서 실행되어야 한다!
+
+
+cf ) JPQL  VS SQL
+
+JPQL = Entity 객체를 대상으로 query. -> queryDialect를 이용하여 현재 database 종류에 맞는 적절한 query문이 생성됨!
+SQL = Database table을 대상으로 query.
+
+==========================================================
+
+[영속성 컨텍스트] : "Entity를 영구적으로 저장하는 환경"
+
+server up 시 EntityManagerFactory가 생성되고
+client의 요청이 있을 때마다 이 factory에서 EntityManager를 꺼내다 쓴다고 생각.
+EntityManager는 내부적으로 DB의 Connection Pool로부터 connection 객체를 이용하여 db에 접근한다.
+
+persist()와 같이 영속성 컨텍스트 안에 들어간다고 해서 바로 쿼리가 실행되는 것이 아님.
+트랜잭션이 커밋되는 시점에 쿼리가 생성되어 db에 반영됨.
+업데이트의 경우 커밋 직전에 영속성 컨텍스트에서 관리하는 Entity에 변경사항이 있는지 감지(dirty checking) 후
+변경사항이 있으면 업데이트 쿼리를 날린 후에 commit 실행!
+
+
+cf) detach() => 영속성 context에서 지우는 함수
+
+em.persist(member) member 객체를 영속성 context에 포함시킴
+em.detach(member) member 객체를 영속성 context 관리 대상에서 제외시킴
+
+영속성 컨텍스트의 이점
+ - application과 database 사이에 중간 계층이 있는 느낌..?
+ -> 변경 감지( Dirty checking)
+ -> 지연 로딩( Lazy loading)
+ -> 1차 캐시 (primary caching)
