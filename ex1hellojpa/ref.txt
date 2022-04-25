@@ -1,0 +1,5 @@
+h2 database 관련
+
+jpa shop = > test
+
+exhellojpa=> test2
