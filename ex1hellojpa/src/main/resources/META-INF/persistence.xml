@@ -15,6 +15,7 @@
             <property name="hibernate.show_sql" value="true"/>
             <property name="hibernate.format_sql" value="true"/>
             <property name="hibernate.use_sql_comments" value="true"/>
+            <property name="hibernate.jdbc.batch_size" value="10"/> <!--이 사이즈만큼 모아서 db에 한방에 commit! -->
             <!--<property name="hibernate.hbm2ddl.auto" value="create" />-->
         </properties>
     </persistence-unit>

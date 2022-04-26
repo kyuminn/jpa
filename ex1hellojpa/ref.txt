@@ -27,6 +27,8 @@ SQL = Database table을 대상으로 query.
 
 [영속성 컨텍스트] : "Entity를 영구적으로 저장하는 환경"
 
+EntityManager를 통해서 눈에 보이지 않는 영속성 컨텍스트에 접근한다 ? 의 느낌?
+
 server up 시 EntityManagerFactory가 생성되고
 client의 요청이 있을 때마다 이 factory에서 EntityManager를 꺼내다 쓴다고 생각.
 EntityManager는 내부적으로 DB의 Connection Pool로부터 connection 객체를 이용하여 db에 접근한다.
@@ -44,6 +46,29 @@ em.detach(member) member 객체를 영속성 context 관리 대상에서 제외�
 
 영속성 컨텍스트의 이점
  - application과 database 사이에 중간 계층이 있는 느낌..?
- -> 변경 감지( Dirty checking)
- -> 지연 로딩( Lazy loading)
- -> 1차 캐시 (primary caching)
+ 1. 변경 감지( Dirty checking)
+    - tx.commit(); 시 flush(); 호출. -> 현재 entity 상태와 snapshot(snapshot: db에서 값을 읽어온 최초 시점에 저장해둔 상태값) 비교 -> 다른 부분 있으면 update sql 생성 -> flush 및 commit
+    -> jpa는 값을 바꾸면 트랜잭션이 commit 되는 시점에 변경을 반영하는구나~ em.persist를 따로 하지 않고 setter로 해주면 되는군.
+    -  참고) flush란? : 영속성 컨텍스트의 변경내용을 db에 반영하는 것 (db에 commit될 때 flush가 호출됨) (영속성 컨텍스트를 비우는 것이 아님.착각X)
+                     : 영속성 컨텍스트를 flush 하는 세가지 방법
+                        1) em.flush() 직접 호출 // 잘 안씀.
+                        2) 트랜잭션 커밋 (플러시 자동 호출)
+                        3) JPQL 쿼리 실행 (플러시 자동 호출)
+ 2. 지연 로딩( Lazy loading)
+ 3. 1차 캐시 (primary caching) (동일한 트랜잭션 안에서만 1차 캐시 존재. 따라서 성능상에 큰 이점이 있지는 않음 . )
+
+===========================================================================================================================================
+트랜잭션 : 수행되어아 할 일련의 연산들 ...
+JPA는 영속성 컨텍스트에 지연 로딩 SQL 문을 저장해놓는데. 이 SQL문은 영속성 컨텍스트에서 관리하는 Entity에 변경 사항을 주는 쿼리문들이다.
+이 쿼리문들은 하나의 트랜잭션으로 처리되고 트랜잭션이 커밋될 때 db에 한꺼번에 반영된다 (?)
+
+=============================================================================
+
+[준영속 상태]
+
+우선 em.find()로 가져온 것/ em.persist() 한 것 두가지는 기본적으로 영속 상태
+영속성 컨텍스트에서 더이상 관리하지 않겠다 (jpa에서 더이상 관리 x )=> 준영속 상태로 전환
+
+em.detach(특정객체이름); => 특정 객체만 준영속 상태로 만들겠다
+em.clear(); => EntityManager 안에 있는 영속성 컨텍스트를 통채로 다 지워버림
+em.close(); => 영속성 컨텍스트를 종료
