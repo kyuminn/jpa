@@ -24,8 +24,8 @@ public class JpaMain {
 //            영속 (EntityManager안에 있는 영속성 컨텍스트 안에서 이 member가 관리된다는 의미)
 //            em.persist(member);
 //            -- Read member--
-            Member member2 = em.find(Member.class, 1L);
-            member2.setName("HelloJPA");
+//            Member member2 = em.find(Member.class, 1L);
+//            member2.setName("HelloJPA");
             // 수정 시 em.persist 해서 저장하지 않아도 됨. 마치 java collection을 다루는 것처럼 set~만 해서 하면 자동으로
             // 데이터베이스에 반영된다.
             // why? JPA를 통해서 가져온 데이터는 JPA에서 계속 dirty check를 한다 (변경감지 기능.)
@@ -37,7 +37,7 @@ public class JpaMain {
             // -- jpql 맛보기 --
             // jpql : database table을 대상으로가 아닌 , Member 객체를 대상으로 쿼리를 짬
             //List<Member> resultList = em.createQuery("select m from Member as m", Member.class).getResultList();'
-            List<Member> resultList= em.createQuery("select m from Member as m where m.id>=1",Member.class).getResultList();
+//            List<Member> resultList= em.createQuery("select m from Member as m where m.id>=1",Member.class).getResultList();
 
             tx.commit();
         }catch (Exception e){

@@ -15,7 +15,8 @@
             <property name="hibernate.show_sql" value="true"/>
             <property name="hibernate.format_sql" value="true"/>
             <property name="hibernate.use_sql_comments" value="true"/>
-            <!--<property name="hibernate.hbm2ddl.auto" value="create" />-->
+            <property name="hibernate.jdbc.batch_size" value="10"/> <!--이 사이즈만큼 모아서 db에 한방에 commit! -->
+            <property name="hibernate.hbm2ddl.auto" value="create" /> <!-- application 실행 시점에 @Entity붙은 클래스에 대해 스키마(ddl 이용) 생성:create table~-->
         </properties>
     </persistence-unit>
 </persistence>
