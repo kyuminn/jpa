@@ -15,6 +15,7 @@ public class JpaMain {
         EntityTransaction tx = em.getTransaction(); // jpa에서 데이터를 변경하는 모든 작업은 트랜잭션 안에서 실행되어야 한다.
         tx.begin();
         // emf-em : connection pool과 connection 객체의 느낌인듯..?
+        
 
         try {
 //            비영속
