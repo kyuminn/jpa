@@ -27,6 +27,10 @@ public class Order {
     @OneToMany(mappedBy = "order")
     private List<OrderItem> orderItems = new ArrayList<>();
 
+    @OneToOne
+    @JoinColumn(name="DELIVERY_ID")
+    private Delivery delivery;
+
     // 앙뱡향 연관관계 편의 메서드는 둘중 한 클래스에만 넣어두면 된다. 어디에 넣을건지는 그때그때 상황마다 다름.
     public void addOrderItem(OrderItem orderItem) {
         orderItems.add(orderItem);
