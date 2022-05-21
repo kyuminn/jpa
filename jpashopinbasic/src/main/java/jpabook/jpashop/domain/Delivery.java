@@ -12,7 +12,7 @@ import javax.persistence.OneToOne;
 @Entity
 @Getter
 @Setter
-public class Delivery {
+public class Delivery extends BaseEntity {
     @Id @GeneratedValue
     private Long id;
     private String city;

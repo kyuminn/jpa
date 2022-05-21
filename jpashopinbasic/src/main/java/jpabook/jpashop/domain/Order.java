@@ -7,7 +7,7 @@ import java.util.List;
 
 @Entity
 @Table(name="ORDERS")
-public class Order {
+public class Order extends BaseEntity {
     @Id
     @GeneratedValue // default strategy auto이므로 생략.
     @Column(name = "ORDER_ID")

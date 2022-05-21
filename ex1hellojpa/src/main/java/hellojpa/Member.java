@@ -19,7 +19,7 @@ import java.util.Date;
 @Setter
 @NoArgsConstructor
 @SequenceGenerator(name="member_seq_generator",sequenceName = "member_seq")
-public class Member {
+public class Member extends BaseEntity{
 
     /*
     기본 키 매핑 관련
@@ -72,6 +72,8 @@ public class Member {
     //VARCHAR를 넘어서는 큰 데이터를 넣고 싶을 때는 Lob 사용
 //    @Lob
 //    private String description;
+
+
 
     public Member(Long id, String name) {
         this.id = id;

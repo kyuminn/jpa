@@ -92,3 +92,9 @@ cf) 설계 시 단방향 매핑을 먼저 하면 이미 연관관계 매핑은 �
 - 1인지 N인지는 상황마다 다르니 판단 후 사용.
 cf) entity 는 controller에서 직접 반환하면 안됨. 꼭 dto 사용할 것!
 
+
+
+//
+
+git reset --hard [commit 고유 ID]
+git push -f [주소명] [브랜치명]
