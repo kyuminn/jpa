@@ -5,6 +5,8 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static javax.persistence.FetchType.*;
+
 @Entity
 public class Category extends BaseEntity {
 
@@ -16,7 +18,7 @@ public class Category extends BaseEntity {
 
     // 셀프 상-하위 양방향 연관관계 가능
     // 상위 카테고리 한개에 하위 카테고리 여러개 있을 수 있음.
-    @ManyToOne
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name="PARENT_ID")
     private Category parent; // 상위 카테고리
 

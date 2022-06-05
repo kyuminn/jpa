@@ -40,6 +40,34 @@ public class JpaMain {
             //List<Member> resultList = em.createQuery("select m from Member as m", Member.class).getResultList();'
 //            List<Member> resultList= em.createQuery("select m from Member as m where m.id>=1",Member.class).getResultList();
 
+            // 영속성 전이 - cascade
+
+//            Parent parent = new Parent();
+//
+//            Child child1 = new Child();
+//            Child child2 = new Child();
+//
+//            parent.addChild(child1);
+//            parent.addChild(child2);
+//
+//            em.persist(parent);
+//
+//            em.flush();
+//            em.clear();
+
+//          고아 객체 관련
+//            Parent parent1 = em.find(Parent.class, parent.getId());
+//            parent1.getChildList().remove(0);
+
+            //cascade 옵션을 사용하면 아래 두 줄은 필요없음.
+//            em.persist(child1);
+//            em.persist(child2);
+
+
+//            // 영속성 context에 있는 data를 모두 db에 반영해서 context 내부를 비움.
+//            em.flush();
+//            em.clear();
+
             tx.commit();
         }catch (Exception e){
             tx.rollback();

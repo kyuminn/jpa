@@ -7,7 +7,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
+import java.util.*;
 
 /* @Entity 에 관해
  - @Entity가 붙은 클래스는 JPA가 관리할 대상이라고 인식함
@@ -44,6 +44,20 @@ public class Member extends BaseEntity{
     @Column(name="name",insertable = true , updatable = true, nullable = false)
     private String username;
 
+    // period
+    @Embedded
+    private Period workPeriod;
+    // address
+    @Embedded
+    private Address homeAddress;
+
+    // 한 entity에서 같은 임베디드 타입을 사용할 때는 다음과 같이 한다.
+    // 새로운 annotation class 직접 들어가서 주석으로 어떻게 사용하는 지 보기 .
+    @Embedded
+    @AttributeOverrides({@AttributeOverride(name="city",column = @Column(name = "WORK_CITY")),
+                        @AttributeOverride(name="street", column = @Column(name = "WORD_STREET")),
+                        @AttributeOverride(name="zipcode",column = @Column(name = "WORK_ZIPCODE"))})
+    private Address workAddress;
 //    private Integer age;
 
     // 이넘 타입에는 @Enumerated 사용
@@ -73,7 +87,21 @@ public class Member extends BaseEntity{
 //    @Lob
 //    private String description;
 
+    // 값 타입 컬렉션 -> 제약사항 많음. 실무에서 사용 x!!
+    // 실무에서는 그냥 일대 다 관계를 사용하는것이 나음.
+//    @ElementCollection
+//    @CollectionTable(name = "FAVORITE_FOOD", joinColumns = @JoinColumn(name = "MEMBER_ID"))
+//    private Set<String> favoritesFoods = new HashSet<>();
+//
+//    @ElementCollection
+//    @CollectionTable(name="ADDRESS",joinColumns = @JoinColumn(name = "MEMBER_ID"))
+//    private List<Address> addressHistory = new ArrayList<>();
 
+    // 값 타입 컬렉션 대신 일대다 사용하는 예제.
+
+    @JoinColumn(name="MEMBER_ID")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<AddressEntity> addressHistory = new ArrayList<>();
 
     public Member(Long id, String name) {
         this.id = id;
