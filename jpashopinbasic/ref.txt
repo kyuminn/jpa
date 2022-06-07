@@ -162,3 +162,32 @@ JPA 엔티티
 
 컬렉션 값 타입 - 자바 Collection.에 기본값 타입이나 임베디드 타입을 넣는 것
 
+===============================================================================================================
+
+JPQL - Entity 객체 대상으로 쿼리 날림. 객체 지향 sql, 특정 db sql에 의존하지 않음.
+JPQL을 짜면 결국 SQL문으로 번역되어서 DB에 쿼리문이 나감.
+    cf) 실무에서 criteria 안씀.
+    criteria 대신에 queryDSL 제공함 (라이브러리임) / 실무에서 queryDSL 사용함!
+
+
+QueryDSL
+    - 오픈 소스 library (www.querydsl.com)
+    - JPQL을 개발자가 직접 작성하는게 아닌 자바 코드로 JPQL을 작성할 수 있음
+    - JPQL Builder 느낌이라 보면 될 듯.
+    - 컴파일 시점에 오류를 찾을 수 있음 (IDE 빨갛게 뜨는 거 ..)
+    - 단순하고 쉬움. 실무 사용 권장
+    - 동적 쿼리 작성 편리!! (mybatis의 장점을 가져온 듯..)
+
+NativeSQL
+    - 특정 db에 종속적인 기능 (oracle의 connect by.. 같은거 사용할 때 필요 )
+    - em.createNativeQuery("생쿼리");
+
+
+or
+    JDBC Template , Mybatis를 조합해서 함꼐 사용 할 수 있음.
+    ( 단 영속성 컨텍스트가 flush 되어야 db에 반영이 되기 때문에, 이 두개를 사용한다면
+    적절한 시점에 강제로 flush 호출해야한다. em.flush();
+
+    em.flush() : 영속성 context를 비우면서 db에 반영하는 과정.
+    em.flush() 는 em.commit()를 호출하거나 em.createNativeQuery() 할 때 자동으로 호출된다!
+
