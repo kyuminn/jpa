@@ -19,6 +19,9 @@ public class Member {
     @JoinColumn(name = "TEAM_ID")
     private Team team;
 
+    @Enumerated(EnumType.STRING)
+    private MemberType memberType;
+
     // 연관관계 편의 메서드 ( 두 클래스 중 하나에만 해주면 됨,,)
     public void changeTeam(Team team){
         this.team = team;

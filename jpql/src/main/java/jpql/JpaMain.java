@@ -11,13 +11,13 @@ public class JpaMain {
         EntityTransaction tx = em.getTransaction();
         tx.begin();
 
-        try{
+        try {
 //            Member member = new Member();
 //            member.setUsername("member a");
 //            member.setAge(10);
 //            em.persist(member);
-            
-            
+
+
             // 반환값이 명확할 때 TypeQuery 사용
             // 반환 타입이 명확하지 않을 때 Query 사용
 //            TypedQuery<Member> query1 = em.createQuery("select m from Member as m", Member.class);
@@ -55,7 +55,7 @@ public class JpaMain {
 //            MemberDto memberDto = resultList3.get(0);
 //            System.out.println(memberDto.getUsername());
 //            System.out.println(memberDto.getAge());
-            
+
             // jpa paging - api로 편리하게 구현할 수 있음
 
 //                for (int i =0; i<100; i++){
@@ -77,41 +77,75 @@ public class JpaMain {
 //            for (Member member : resultList4) {
 //                System.out.println(member);
 //            }
-        // join
+            // join
 
-        Team team = new Team();
-        team.setName("teamA");
-        em.persist(team);
+            Team team = new Team();
+            team.setName("teamA");
+            em.persist(team);
 
-        Member member = new Member();
-        member.setUsername("member");
-        member.setAge(10);
-        member.setTeam(team);
-        em.persist(member);
+            Member member = new Member();
+            member.setUsername("member");
+            member.setAge(10);
+            member.setTeam(team);
+            member.setMemberType(MemberType.ADMIN);
+            em.persist(member);
 
-        em.flush();
-        em.clear();
+            em.flush();
+            em.clear();
 
             // inner join 에서 inner는 생략 가능 (보통 생략함)
             // left outer join에서 outer는 생략 가능 (보통 생략함)
-        String query = "select m from Member as m inner join m.team as t"; // member pk와 team pk가 같은것끼리 자동으러 조인하는듯.
-        String query2 = "select m from Member as m left outer join m.team as t";
-        String query3 = "select m from Member as m , Team as t where m.username = t.name"; //아무 연관관계 없는 세타 조인 예시 (cross join)
-        List<Member> resultList5 = em.createQuery(query2, Member.class).getResultList();
+//        String query = "select m from Member as m inner join m.team as t"; // member pk와 team pk가 같은것끼리 자동으러 조인하는듯.
+//        String query2 = "select m from Member as m left outer join m.team as t";
+//        String query3 = "select m from Member as m , Team as t where m.username = t.name"; //아무 연관관계 없는 세타 조인 예시 (cross join)
+//        List<Member> resultList5 = em.createQuery(query2, Member.class).getResultList();
+//
+//        List<Member> resultList6 = em.createQuery(query, Member.class)
+//                                    .getResultList();
+//        List<Member> resultList7 = em.createQuery(query3,Member.class).getResultList();
 
-        List<Member> resultList6 = em.createQuery(query, Member.class)
-                                    .getResultList();
-        List<Member> resultList7 = em.createQuery(query3,Member.class).getResultList();
+            // 회원과 팀을 외부 조인하면서 ,팀 이름이 A인 팀만 조인
+//        em.createQuery("select m from Member m left outer join m.team t on t.name='teamA'");
 
-        // 회원과 팀을 외부 조인하면서 ,팀 이름이 A인 팀만 조인
-        em.createQuery("select m from Member m left outer join m.team t on t.name='teamA'");
+            // 서브 쿼리
+            // 나이가 평균보다 많은 회원
+//        em.createQuery("select m from Member as m where m.age > (select avg(m2.age) from Member as m2)");
 
+            // enum type 조회
+//            em.createQuery("select m from Member m  where m.memberType = :memberType")
+//                    .setParameter("memberType", MemberType.ADMIN);
 
+            // CASE
+//            List<String> resultList = em.createQuery("select " +
+//                    "case when m.age <=10 then '학생요금' " +
+//                    "when m.age >=60 then '경로요금' " +
+//                    "else '일반요금' end from Member m", String.class).getResultList();
+//
+//            for (String s : resultList) {
+//                System.out.println("s="+s); // 위에서 age 10이라고 했으므로 학생 요금 나옴.
+//            }
+//            // username이 없으면 '이름 없는 회원' 반환
+//            // 쿼리 띄어쓰기 주의
+//            List<String> resultList1 = em.createQuery("select coalesce(m.username, '이름 없는 회원') from Member m", String.class).getResultList();
+//            for (String s : resultList1) {
+//                System.out.println("s= "+s);
+//            }
+//
+//            // 사용자 이름이 '관리자'면 null을 반환하고 나머지는 본인의 이름을 반환
+//            List<String> resultList2 = em.createQuery("select nullif(m.username, '관리자') from Member as m", String.class).getResultList();
+//            for (String s : resultList2) {
+//                System.out.println("s="+s);
+//            }
+
+//            String query = "select function('group_concat', m.username) from Member m";
+            // inject language : alt + enter
+
+            // 실무에서는 왠만하면 묵시적 조인이 아닌 명시적 조인을 사용해야 함.
             tx.commit();
 
-        }catch(Exception e){
+        } catch (Exception e) {
             tx.rollback();
-        }finally {
+        } finally {
             em.close();
         }
         emf.close();
