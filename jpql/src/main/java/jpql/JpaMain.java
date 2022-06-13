@@ -1,6 +1,7 @@
 package jpql;
 
 import javax.persistence.*;
+import java.util.Collection;
 import java.util.List;
 
 public class JpaMain {
@@ -77,21 +78,10 @@ public class JpaMain {
 //            for (Member member : resultList4) {
 //                System.out.println(member);
 //            }
-            // join
 
-            Team team = new Team();
-            team.setName("teamA");
-            em.persist(team);
 
-            Member member = new Member();
-            member.setUsername("member");
-            member.setAge(10);
-            member.setTeam(team);
-            member.setMemberType(MemberType.ADMIN);
-            em.persist(member);
-
-            em.flush();
-            em.clear();
+//            em.flush();
+//            em.clear();
 
             // inner join 에서 inner는 생략 가능 (보통 생략함)
             // left outer join에서 outer는 생략 가능 (보통 생략함)
@@ -141,6 +131,68 @@ public class JpaMain {
             // inject language : alt + enter
 
             // 실무에서는 왠만하면 묵시적 조인이 아닌 명시적 조인을 사용해야 함.
+
+            // fetch join - 실무에서 많이 쓰임 ( fetchType.Eager과 같은 한방 쿼리,)
+            // 상황가정 - team에 속한 member를 모두 가져오고 싶을 때
+            Team teamA = new Team();
+            teamA.setName("팀 A");
+            em.persist(teamA);
+
+            Team teamB = new Team();
+            teamB.setName("팀 B");
+            em.persist(teamB);
+
+            Member member1= new Member();
+            member1.setUsername("회원1");
+            member1.setTeam(teamA);
+            em.persist(member1);
+
+            Member member2 = new Member();
+            member2.setUsername("회원2");
+            member2.setTeam(teamA);
+            em.persist(member2);
+
+            Member member3 = new Member();
+            member3.setUsername("회원3");
+            member3.setTeam(teamB);
+            em.persist(member3);
+
+            em.flush();
+            em.clear();
+
+//            String query = "select m from Member as m ";
+//            List<Member> resultList = em.createQuery(query, Member.class).getResultList();
+//
+//            for (Member member : resultList) {
+//                System.out.println("Member : "+ member.getUsername()+member.getTeam().getName()); // getTeam()할때 proxy 객체가 담김
+//                // 회원1 : 팀A (SQL)
+//                // 회원2 : 팀A (1차캐시)
+//                // 회원3 : 팀B (SQL)
+//
+//                // 회원100 명 -> 1 + N (1 : 첫번째 member 가져오는 경우.. N : 그 멤버에서 팀을 가져올 때부수적인 쿼리) 즉시/지연 로딩 모두 발생함. -> fetch join으로 풀어야함
+//            }
+            // 지연로딩으로 setting해도 fetch join이 우선순위임.
+//            String query = "select m from Member as m join fetch m.team"; // 이때는 join문으로 select쿼리가 한개만 나감. getTeam()한 것은 proxy가 아니라 실제 entity임.
+//            // join문으로 가져오기 때문에 영속성context에 이미 team이 담겨있기 때문!
+//            List<Member> resultList = em.createQuery(query, Member.class).getResultList();
+//            for (Member member : resultList) {
+//                System.out.println("member:"+member.getUsername()+member.getTeam().getName());
+//            }
+
+            //  jpql distinct : 1. query 상에 distinct 추가 , 2. entity 상의 중복 제거! (이 경우에는 같은 식별자를 가진 Team entity 제거)
+            // distinct가 없는 경우 team을 기준으로 member를 조인한 경우 한 팀에대해 여러 멤버가 존재할 수 있기 때문에 (join하면서 data가 뻥튀기 되는 경우임)
+            // 여러 멤버가 속해있는 팀을 기준으로 쿼리 결과가 반환되어, 중복된 데이터가 들어갈 수 있다 -> 그 경우에는 distinct 키워드를 사용하면 된다.
+            // distinct 키워드 유/무 경우에 result값 달라지는 것 확인.
+            String query1 = "select distinct t from Team as t join fetch t.members";
+            List<Team> resultList1 = em.createQuery(query1, Team.class).getResultList();
+            for (Team team : resultList1) {
+                System.out.println(team.getName()+"|"+team.getMembers().size());
+            }
+
+            // 그냥 join : select t from Team t join t.members m
+                // select문에 team만 가져옴 ( join은 하되 데이터는 team만!)
+            // fetch join : select t from Team t join fetch t.members => fetch join을 사용할 때는 사실상 즉시 로딩이 일어난다고 보면 됨.
+                // select문에서 members도 가져옴
             tx.commit();
 
         } catch (Exception e) {
