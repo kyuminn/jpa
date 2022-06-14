@@ -183,6 +183,12 @@ public class JpaMain {
             // distinct가 없는 경우 team을 기준으로 member를 조인한 경우 한 팀에대해 여러 멤버가 존재할 수 있기 때문에 (join하면서 data가 뻥튀기 되는 경우임)
             // 여러 멤버가 속해있는 팀을 기준으로 쿼리 결과가 반환되어, 중복된 데이터가 들어갈 수 있다 -> 그 경우에는 distinct 키워드를 사용하면 된다.
             // distinct 키워드 유/무 경우에 result값 달라지는 것 확인.
+            // fetch join 대상에는 별칭을 줄 수 없다. (hibernate는 사용 가능하지만, 가급적 사용하지 말 것.)
+            // jpa에서 team 에서 member를 가져올 때는 모든 member를 가져오도록 설계되어 있기 때문에 조건절로 특정 팀에서 특정 member만 가져오면
+            // 안됨
+            // 만약 특정 팀에서 특정 멤버 집합만 가져오고 싶으면 fetch join 별칭으로 해결 할 것이 아니라 별도의 쿼리를 짜서 수행해야 함.
+
+            // fetch join 시 일대일, 다대일 -> 데이터 뻥튀기 안됨 , 일대다 -> 데이터 뻥튀기 됨
             String query1 = "select distinct t from Team as t join fetch t.members";
             List<Team> resultList1 = em.createQuery(query1, Team.class).getResultList();
             for (Team team : resultList1) {
@@ -193,6 +199,13 @@ public class JpaMain {
                 // select문에 team만 가져옴 ( join은 하되 데이터는 team만!)
             // fetch join : select t from Team t join fetch t.members => fetch join을 사용할 때는 사실상 즉시 로딩이 일어난다고 보면 됨.
                 // select문에서 members도 가져옴
+
+            // 정리 = 실무에서 로딩 전략은 모두 지연 로딩을 사용하되, 최적화가 필요한 곳에서 fetch join을 적용한다
+            // 실무에서 성능문제의 70~80%는 1+N 문제이므로 , fetch join을 사용하도록 한다 (지연 로딩도 1+N 문제가 발생)
+
+            // 페치 조인은 그래프를 유지할 때 사용하면 효과적 ( member.team...)
+            // 여러 테이블을 조인해서 엔티티가 가진 모양이 아닌 전혀 다른 결과를 내야 하면, 페치 조인 말고 일반 조인을
+            // 사용하여 필요한 데이터들만 dto로 반환하는 것이 효과적.
             tx.commit();
 
         } catch (Exception e) {

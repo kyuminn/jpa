@@ -17,6 +17,7 @@
             <property name="hibernate.use_sql_comments" value="true"/>
             <property name="hibernate.jdbc.batch_size" value="10"/> <!--이 사이즈만큼 모아서 db에 한방에 commit! -->
             <property name="hibernate.hbm2ddl.auto" value="create" /> <!-- application 실행 시점에 @Entity붙은 클래스에 대해 스키마 자동생성:create table~-->
+            <property name="hibernate.default_batch_fetch_size" value="100"/><!--쿼리의 갯수를 그때그때 실행하는 게 아니라 db 테이블 결과에 맞게 특정 개수만 가져올 수 있음 ??? 다시 정리 필요. -->
         </properties>
     </persistence-unit>
 </persistence>
