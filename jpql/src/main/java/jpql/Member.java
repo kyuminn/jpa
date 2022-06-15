@@ -8,6 +8,14 @@ import javax.persistence.*;
 @Entity
 @Getter
 @Setter
+@NamedQuery(
+        name = "Member.findByUsername",
+        query = "select m from Member as m where m.username=:username"
+)
+// NamedQuery : 쿼리를 미리 정해놓고 재활용해서 쓰는 느낌 . 어플리케이션 로딩 시점에 jpql에서 sql로 번역된 이후에 캐싱해서 가져오기 때문에 장점이 있음. (spring data jpa에서는 @query)
+// 실행 시점에서 컴파일 에러가 뜨기 때문에 잘못 수정되었다 하더라도 안전.
+// 참고로 NamedQuery를 xml에 정의할 수도 있음. (xml이 우선권을 가짐.)
+
 public class Member {
 
     @Id @GeneratedValue

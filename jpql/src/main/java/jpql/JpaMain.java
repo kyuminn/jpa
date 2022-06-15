@@ -189,11 +189,11 @@ public class JpaMain {
             // 만약 특정 팀에서 특정 멤버 집합만 가져오고 싶으면 fetch join 별칭으로 해결 할 것이 아니라 별도의 쿼리를 짜서 수행해야 함.
 
             // fetch join 시 일대일, 다대일 -> 데이터 뻥튀기 안됨 , 일대다 -> 데이터 뻥튀기 됨
-            String query1 = "select distinct t from Team as t join fetch t.members";
-            List<Team> resultList1 = em.createQuery(query1, Team.class).getResultList();
-            for (Team team : resultList1) {
-                System.out.println(team.getName()+"|"+team.getMembers().size());
-            }
+//            String query1 = "select distinct t from Team as t join fetch t.members";
+//            List<Team> resultList1 = em.createQuery(query1, Team.class).getResultList();
+//            for (Team team : resultList1) {
+//                System.out.println(team.getName()+"|"+team.getMembers().size());
+//            }
 
             // 그냥 join : select t from Team t join t.members m
                 // select문에 team만 가져옴 ( join은 하되 데이터는 team만!)
@@ -206,6 +206,13 @@ public class JpaMain {
             // 페치 조인은 그래프를 유지할 때 사용하면 효과적 ( member.team...)
             // 여러 테이블을 조인해서 엔티티가 가진 모양이 아닌 전혀 다른 결과를 내야 하면, 페치 조인 말고 일반 조인을
             // 사용하여 필요한 데이터들만 dto로 반환하는 것이 효과적.
+
+            // NamedQuery
+            List<Member> resultList = em.createNamedQuery("Member.findByUsername", Member.class).setParameter("username", "회원1").getResultList();
+            for (Member member : resultList) {
+                System.out.println("member = " + member);
+            }
+
             tx.commit();
 
         } catch (Exception e) {
